@@ -37,5 +37,9 @@ public class Registration {
     @Size(max = 50)
     private String gejala;
 
+    @NotBlank
+    @Size(max = 50)
+    private String namadokter;
+
 
 }

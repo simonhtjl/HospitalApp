@@ -1,13 +1,17 @@
 package com.indivara.hospital.controllers;
-import com.indivara.hospital.models.entities.Registration;
-import com.indivara.hospital.models.entities.Treatment;
-import com.indivara.hospital.models.entities.User;
+import com.indivara.hospital.models.entities.*;
+import com.indivara.hospital.models.repos.RoleRepository;
+import com.indivara.hospital.models.repos.UserRepository;
 import com.indivara.hospital.security.services.RegistrationService;
 import com.indivara.hospital.security.services.TreatmentService;
+import com.indivara.hospital.security.services.UserDetailsServiceImpl;
+import com.indivara.hospital.security.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.awt.print.Pageable;
+import java.util.HashSet;
 import java.util.List;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -19,7 +23,11 @@ public class TestController {
     private RegistrationService registrationService;
 
     @Autowired
+    private UserService userService;
+
+    @Autowired
     private TreatmentService treatmentService;
+
 
     @GetMapping("/all")
     public String allAccess() {
@@ -27,17 +35,15 @@ public class TestController {
     }
 
     //PASIEN
-    @GetMapping("/pasien")
+    @GetMapping("/pasien/daftardokter")
     @PreAuthorize("hasRole('PASIEN')")
-    public String userAccess() {
-        ///funsgi crud registrasi
-        return "Pasien Content.";
+    public List<User> getUser(){
+        return userService.getAllDokter();
     }
 
     @PostMapping("/pasien/registrasi")
     @PreAuthorize("hasRole('PASIEN')")
     public Registration create(@RequestBody Registration registration){
-
         return registrationService.create(registration);
     }
 
