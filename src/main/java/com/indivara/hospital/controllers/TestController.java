@@ -1,18 +1,17 @@
 package com.indivara.hospital.controllers;
 import com.indivara.hospital.models.entities.*;
-import com.indivara.hospital.models.repos.RoleRepository;
-import com.indivara.hospital.models.repos.UserRepository;
+import com.indivara.hospital.models.repos.RegistrationRepository;
 import com.indivara.hospital.security.services.RegistrationService;
 import com.indivara.hospital.security.services.TreatmentService;
-import com.indivara.hospital.security.services.UserDetailsServiceImpl;
 import com.indivara.hospital.security.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.awt.print.Pageable;
-import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -27,6 +26,9 @@ public class TestController {
 
     @Autowired
     private TreatmentService treatmentService;
+
+    @Autowired
+    private RegistrationRepository registrationRepository;
 
 
     @GetMapping("/all")
@@ -73,6 +75,18 @@ public class TestController {
         return treatmentService.findAllTreatment();
     }
 
+//    @GetMapping("/dokter/registration/{id}")
+//    @PreAuthorize("hasRole('DOKTER')")
+    @GetMapping("/dokter/treatment/{id}")
+    @PreAuthorize("hasRole('DOKTER')")
+    public ResponseEntity<Registration> getRegistrationById(@PathVariable("id") Long id) {
+        Optional<Registration> registrationData = registrationRepository.findById(id);
+        if (registrationData.isPresent()) {
+            return new ResponseEntity<>(registrationData.get(), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
 
     //ADMIN
     @GetMapping("/superadmin")
